@@ -1,0 +1,7 @@
+C:\Users\kimbe\Documents\Semestre VIII\Analisis de sistemas II\PERSONAL_CXC\Prototipo_Movimiento_Clientes\Movimientos_clientes\CapaDatos\bin\Debug\CapaDatos.dll
+C:\Users\kimbe\Documents\Semestre VIII\Analisis de sistemas II\PERSONAL_CXC\Prototipo_Movimiento_Clientes\Movimientos_clientes\CapaDatos\bin\Debug\CapaDatos.pdb
+C:\Users\kimbe\Documents\Semestre VIII\Analisis de sistemas II\PERSONAL_CXC\Prototipo_Movimiento_Clientes\Movimientos_clientes\CapaDatos\bin\Debug\MySql.Data.dll
+C:\Users\kimbe\Documents\Semestre VIII\Analisis de sistemas II\PERSONAL_CXC\Prototipo_Movimiento_Clientes\Movimientos_clientes\CapaDatos\bin\Debug\MySql.Data.xml
+C:\Users\kimbe\Documents\Semestre VIII\Analisis de sistemas II\PERSONAL_CXC\Prototipo_Movimiento_Clientes\Movimientos_clientes\CapaDatos\obj\Debug\CapaDatos.csprojResolveAssemblyReference.cache
+C:\Users\kimbe\Documents\Semestre VIII\Analisis de sistemas II\PERSONAL_CXC\Prototipo_Movimiento_Clientes\Movimientos_clientes\CapaDatos\obj\Debug\CapaDatos.dll
+C:\Users\kimbe\Documents\Semestre VIII\Analisis de sistemas II\PERSONAL_CXC\Prototipo_Movimiento_Clientes\Movimientos_clientes\CapaDatos\obj\Debug\CapaDatos.pdb

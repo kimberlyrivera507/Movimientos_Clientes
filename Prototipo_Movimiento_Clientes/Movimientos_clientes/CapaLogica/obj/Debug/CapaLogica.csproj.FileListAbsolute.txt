@@ -1,0 +1,5 @@
+C:\Users\kimbe\Documents\Semestre VIII\Analisis de sistemas II\PERSONAL_CXC\Prototipo_Movimiento_Clientes\Movimientos_clientes\CapaLogica\bin\Debug\CapaLogica.dll
+C:\Users\kimbe\Documents\Semestre VIII\Analisis de sistemas II\PERSONAL_CXC\Prototipo_Movimiento_Clientes\Movimientos_clientes\CapaLogica\bin\Debug\CapaLogica.pdb
+C:\Users\kimbe\Documents\Semestre VIII\Analisis de sistemas II\PERSONAL_CXC\Prototipo_Movimiento_Clientes\Movimientos_clientes\CapaLogica\obj\Debug\CapaLogica.csprojResolveAssemblyReference.cache
+C:\Users\kimbe\Documents\Semestre VIII\Analisis de sistemas II\PERSONAL_CXC\Prototipo_Movimiento_Clientes\Movimientos_clientes\CapaLogica\obj\Debug\CapaLogica.dll
+C:\Users\kimbe\Documents\Semestre VIII\Analisis de sistemas II\PERSONAL_CXC\Prototipo_Movimiento_Clientes\Movimientos_clientes\CapaLogica\obj\Debug\CapaLogica.pdb
