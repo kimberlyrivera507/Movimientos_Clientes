@@ -1,21 +1,9 @@
 -- MySQL Workbench Forward Engineering
 
-SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
-SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
-SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
+##drop database hotelsancarlos;
+create database hotelSanCarlos;
+use hotelSanCarlos;
 
--- -----------------------------------------------------
--- Schema mydb
--- -----------------------------------------------------
--- -----------------------------------------------------
--- Schema hotelSanCarlos
--- -----------------------------------------------------
-
--- -----------------------------------------------------
--- Schema hotelSanCarlos
--- -----------------------------------------------------
-CREATE SCHEMA IF NOT EXISTS `hotelSanCarlos` DEFAULT CHARACTER SET latin1 ;
-USE `hotelSanCarlos` ;
 
 -- -----------------------------------------------------
 -- Table `hotelSanCarlos`.`empleado`
@@ -38,7 +26,7 @@ CREATE TABLE IF NOT EXISTS `hotelSanCarlos`.`empleado` (
   `noCuenta` INT(11) NULL DEFAULT NULL,
   `cuentabanco_idBanco` INT(11) NOT NULL,
   PRIMARY KEY (`idEmpleado`))
-ENGINE = MyISAM
+ENGINE = InnoDB
 DEFAULT CHARACTER SET = latin1;
 
 
@@ -51,7 +39,7 @@ CREATE TABLE IF NOT EXISTS `hotelSanCarlos`.`horario` (
   `horaSalida` DATETIME NOT NULL,
   `diasDescanso` INT NOT NULL,
   PRIMARY KEY (`idHorario`))
-ENGINE = MyISAM
+ENGINE = InnoDB
 DEFAULT CHARACTER SET = latin1;
 
 
@@ -63,7 +51,7 @@ CREATE TABLE IF NOT EXISTS `hotelSanCarlos`.`departamento` (
   `nombreDepartamento` VARCHAR(55) NOT NULL,
   `jefeDepartamento` VARCHAR(55) NOT NULL,
   PRIMARY KEY (`idDepartamento`))
-ENGINE = MyISAM
+ENGINE = InnoDB
 DEFAULT CHARACTER SET = latin1;
 
 
@@ -77,7 +65,7 @@ CREATE TABLE IF NOT EXISTS `hotelSanCarlos`.`puesto` (
   `departamentoIdDepartamento` INT(11) NOT NULL,
   PRIMARY KEY (`idPuesto`),
   INDEX `fk_puesto_departamento1_idx` (`departamentoIdDepartamento` ASC))
-ENGINE = MyISAM
+ENGINE = InnoDB
 DEFAULT CHARACTER SET = latin1;
 
 
@@ -100,11 +88,12 @@ CREATE TABLE IF NOT EXISTS `hotelSanCarlos`.`contrato` (
   `empleado_idEmpleado` INT(11) NOT NULL,
   `horario_idHorario` INT(11) NOT NULL,
   `puesto_idPuesto` INT(11) NOT NULL,
+  `sueldoCalculado` FLOAT NULL,
   PRIMARY KEY (`idContrato`),
   INDEX `fk_contrato_empleado1_idx` (`empleado_idEmpleado` ASC),
   INDEX `fk_contrato_horario1_idx` (`horario_idHorario` ASC),
   INDEX `fk_contrato_puesto1_idx` (`puesto_idPuesto` ASC))
-ENGINE = MyISAM
+ENGINE = InnoDB
 DEFAULT CHARACTER SET = latin1;
 
 
@@ -119,14 +108,14 @@ CREATE TABLE IF NOT EXISTS `hotelSanCarlos`.`aguinaldo` (
   `contrato_idContrato` INT(10) NOT NULL,
   PRIMARY KEY (`idAguinaldo`),
   INDEX `fk_aguinaldo_contrato1_idx` (`contrato_idContrato` ASC))
-ENGINE = MyISAM
+ENGINE = InnoDB
 DEFAULT CHARACTER SET = latin1;
 
 
 -- -----------------------------------------------------
--- Table `hotelSanCarlos`.`porcentajeCompra`
+-- Table `hotelSanCarlos`.`listadoPrecios`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `hotelSanCarlos`.`porcentajeCompra` (
+CREATE TABLE IF NOT EXISTS `hotelSanCarlos`.`listadoPrecios` (
   `idPorcentaje` INT NOT NULL AUTO_INCREMENT,
   `descripcion` VARCHAR(45) NULL,
   `dato` DOUBLE NULL,
@@ -139,10 +128,7 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `hotelSanCarlos`.`vendedor` (
   `idVendedor` INT NOT NULL,
-  `nombre` VARCHAR(45) NOT NULL,
-  `apellido` VARCHAR(45) NOT NULL,
-  `telefono` VARCHAR(45) NULL,
-  `direccion` VARCHAR(45) NULL,
+  `comision` FLOAT NULL,
   PRIMARY KEY (`idVendedor`))
 ENGINE = InnoDB;
 
@@ -162,10 +148,10 @@ CREATE TABLE IF NOT EXISTS `hotelSanCarlos`.`cliente` (
   `correoCliente` VARCHAR(45) NULL DEFAULT NULL,
   `porcentajeCompra_idPorcentaje` INT NOT NULL,
   `vendedor_idVendedor` INT NOT NULL,
-  PRIMARY KEY (`idCliente`, `porcentajeCompra_idPorcentaje`, `vendedor_idVendedor`),
+  PRIMARY KEY (`idCliente`),
   INDEX `fk_cliente_porcentajeCompra1_idx` (`porcentajeCompra_idPorcentaje` ASC),
   INDEX `fk_cliente_vendedor1_idx` (`vendedor_idVendedor` ASC))
-ENGINE = MyISAM
+ENGINE = InnoDB
 DEFAULT CHARACTER SET = latin1;
 
 
@@ -175,11 +161,8 @@ DEFAULT CHARACTER SET = latin1;
 CREATE TABLE IF NOT EXISTS `hotelSanCarlos`.`tipohabitacion` (
   `idTipoHabitacion` INT(11) NOT NULL AUTO_INCREMENT,
   `nombreTipoHabitacion` VARCHAR(50) NOT NULL,
-  `costoTipoHabitacion` FLOAT NOT NULL,
-  `capacidadTipoHabitacion` INT(11) NOT NULL,
-  `descripcionTipoHabitacion` VARCHAR(120) NULL DEFAULT NULL,
   PRIMARY KEY (`idTipoHabitacion`))
-ENGINE = MyISAM
+ENGINE = InnoDB
 DEFAULT CHARACTER SET = latin1;
 
 
@@ -188,12 +171,14 @@ DEFAULT CHARACTER SET = latin1;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `hotelSanCarlos`.`habitacion` (
   `idHabitacion` INT(11) NOT NULL AUTO_INCREMENT,
-  `numeroHabitacion` INT(4) NOT NULL,
   `estatusHabitacion` VARCHAR(45) NOT NULL,
   `tipohabitacion_idTipoHabitacion` INT(11) NOT NULL,
-  PRIMARY KEY (`idHabitacion`, `tipohabitacion_idTipoHabitacion`),
+  `tipo` VARCHAR(50) NULL,
+  `descripcion` VARCHAR(45) NULL,
+  `costo` INT NULL,
+  PRIMARY KEY (`idHabitacion`),
   INDEX `fk_habitacion_tipohabitacion1_idx` (`tipohabitacion_idTipoHabitacion` ASC))
-ENGINE = MyISAM
+ENGINE = InnoDB
 DEFAULT CHARACTER SET = latin1;
 
 
@@ -209,7 +194,7 @@ CREATE TABLE IF NOT EXISTS `hotelSanCarlos`.`asignacionhabitacion` (
   PRIMARY KEY (`idAsignacionHabitacion`),
   INDEX `fk_asignacionhabitacion_cliente1_idx` (`cliente_idCliente` ASC),
   INDEX `fk_asignacionhabitacion_habitacion1_idx` (`habitacion_idHabitacion` ASC))
-ENGINE = MyISAM
+ENGINE = InnoDB
 DEFAULT CHARACTER SET = latin1;
 
 
@@ -220,7 +205,7 @@ CREATE TABLE IF NOT EXISTS `hotelSanCarlos`.`banco` (
   `idBanco` INT(11) NOT NULL,
   `nombre` VARCHAR(25) NULL DEFAULT NULL,
   PRIMARY KEY (`idBanco`))
-ENGINE = MyISAM
+ENGINE = InnoDB
 DEFAULT CHARACTER SET = latin1;
 
 
@@ -235,7 +220,7 @@ CREATE TABLE IF NOT EXISTS `hotelSanCarlos`.`bodega` (
   `capacidad` VARCHAR(45) NULL DEFAULT NULL,
   `encargado` VARCHAR(45) NULL DEFAULT NULL,
   PRIMARY KEY (`idBodega`))
-ENGINE = MyISAM
+ENGINE = InnoDB
 DEFAULT CHARACTER SET = latin1;
 
 
@@ -248,7 +233,7 @@ CREATE TABLE IF NOT EXISTS `hotelSanCarlos`.`comprasdetalle` (
   `cantidad` INT(11) NULL DEFAULT NULL,
   `subtotal` DOUBLE NULL DEFAULT NULL,
   PRIMARY KEY (`idComprasDetalle`))
-ENGINE = MyISAM
+ENGINE = InnoDB
 DEFAULT CHARACTER SET = latin1;
 
 
@@ -264,7 +249,7 @@ CREATE TABLE IF NOT EXISTS `hotelSanCarlos`.`comprasencabezado` (
   `comprasdetalle_idComprasDetalle` INT(11) NOT NULL,
   PRIMARY KEY (`idComprasEncabezado`),
   INDEX `fk_comprasencabezado_comprasdetalle1_idx` (`comprasdetalle_idComprasDetalle` ASC))
-ENGINE = MyISAM
+ENGINE = InnoDB
 DEFAULT CHARACTER SET = latin1;
 
 
@@ -276,8 +261,9 @@ CREATE TABLE IF NOT EXISTS `hotelSanCarlos`.`moneda` (
   `moneda` VARCHAR(10) NULL DEFAULT NULL,
   `valor` FLOAT NULL DEFAULT NULL,
   `cuentabanco_idBanco` INT(11) NOT NULL,
+  `Fecha` DATE NOT NULL,
   PRIMARY KEY (`idMoneda`))
-ENGINE = MyISAM
+ENGINE = InnoDB
 DEFAULT CHARACTER SET = latin1;
 
 
@@ -291,12 +277,14 @@ CREATE TABLE IF NOT EXISTS `hotelSanCarlos`.`cuentabanco` (
   `saldoDisponible` FLOAT NULL DEFAULT NULL,
   `tipoCuenta` VARCHAR(25) NULL DEFAULT NULL,
   `tipoMoneda` VARCHAR(25) NULL DEFAULT NULL,
-  `banco_idBanco` INT(11) NOT NULL,
   `moneda_idMoneda` INT(11) NOT NULL,
+  `banco_idBanco` INT(11) NOT NULL,
+  `empleado_idEmpleado` INT(11) NOT NULL,
   PRIMARY KEY (`noCuenta`),
+  INDEX `fk_cuentabanco_moneda1_idx` (`moneda_idMoneda` ASC),
   INDEX `fk_cuentabanco_banco1_idx` (`banco_idBanco` ASC),
-  INDEX `fk_cuentabanco_moneda1_idx` (`moneda_idMoneda` ASC))
-ENGINE = MyISAM
+  INDEX `fk_cuentabanco_empleado1_idx` (`empleado_idEmpleado` ASC))
+ENGINE = InnoDB
 DEFAULT CHARACTER SET = latin1;
 
 
@@ -318,7 +306,7 @@ CREATE TABLE IF NOT EXISTS `hotelSanCarlos`.`cuentacontabilidad` (
   `naturaleza` VARCHAR(45) NULL,
   `tipo` VARCHAR(45) NOT NULL,
   PRIMARY KEY (`nomenclatura`))
-ENGINE = MyISAM
+ENGINE = InnoDB
 DEFAULT CHARACTER SET = latin1;
 
 
@@ -344,19 +332,44 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
+-- Table `hotelSanCarlos`.`marca`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `hotelSanCarlos`.`marca` (
+  `idMarca` INT NOT NULL AUTO_INCREMENT,
+  `nombre` VARCHAR(45) NULL,
+  `comision` FLOAT NULL,
+  PRIMARY KEY (`idMarca`))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `hotelSanCarlos`.`linea`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `hotelSanCarlos`.`linea` (
+  `idLinea` INT NOT NULL AUTO_INCREMENT,
+  `nombre` VARCHAR(45) NULL,
+  `comision` FLOAT NULL,
+  PRIMARY KEY (`idLinea`))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
 -- Table `hotelSanCarlos`.`productos`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `hotelSanCarlos`.`productos` (
   `idProducto` INT(11) NOT NULL,
   `descripcion` VARCHAR(50) NULL DEFAULT NULL,
   `precio` INT(11) NULL DEFAULT NULL,
-  `categoriaProducto` VARCHAR(45) NOT NULL,
   `comprasdetalle_idComprasDetalle` INT(11) NOT NULL,
   `tipoProducto_idTipoProducto` INT NOT NULL,
+  `marca_idMarca` INT NOT NULL,
+  `linea_idLinea` INT NOT NULL,
   PRIMARY KEY (`idProducto`),
   INDEX `fk_productos_comprasdetalle1_idx` (`comprasdetalle_idComprasDetalle` ASC),
-  INDEX `fk_productos_tipoProducto1_idx` (`tipoProducto_idTipoProducto` ASC))
-ENGINE = MyISAM
+  INDEX `fk_productos_tipoProducto1_idx` (`tipoProducto_idTipoProducto` ASC),
+  INDEX `fk_productos_marca1_idx` (`marca_idMarca` ASC),
+  INDEX `fk_productos_linea1_idx` (`linea_idLinea` ASC))
+ENGINE = InnoDB
 DEFAULT CHARACTER SET = latin1;
 
 
@@ -372,7 +385,7 @@ CREATE TABLE IF NOT EXISTS `hotelSanCarlos`.`inventario` (
   `productos_idProducto` INT(11) NOT NULL,
   PRIMARY KEY (`codigoInventario`),
   INDEX `fk_inventario_productos1_idx` (`productos_idProducto` ASC))
-ENGINE = MyISAM
+ENGINE = InnoDB
 DEFAULT CHARACTER SET = latin1;
 
 
@@ -390,7 +403,7 @@ CREATE TABLE IF NOT EXISTS `hotelSanCarlos`.`depreciacion` (
   INDEX `fk_depreciacion_cuentacontabilidad1_idx` (`cuentacontabilidad_nomenclatura` ASC),
   INDEX `fk_depreciacion_tipoDepreciacion1_idx` (`tipoDepreciacion_idTipoDepreciacion` ASC),
   INDEX `fk_depreciacion_inventario1_idx` (`inventario_codigoInventario` ASC))
-ENGINE = MyISAM
+ENGINE = InnoDB
 DEFAULT CHARACTER SET = latin1;
 
 
@@ -405,7 +418,7 @@ CREATE TABLE IF NOT EXISTS `hotelSanCarlos`.`despido` (
   `contrato_idContrato` INT(10) NOT NULL,
   PRIMARY KEY (`idDespido`),
   INDEX `fk_despido_contrato1_idx` (`contrato_idContrato` ASC))
-ENGINE = MyISAM
+ENGINE = InnoDB
 DEFAULT CHARACTER SET = latin1;
 
 
@@ -420,7 +433,7 @@ CREATE TABLE IF NOT EXISTS `hotelSanCarlos`.`servicio` (
   `tipohabitacion_idTipoHabitacion` INT(11) NOT NULL,
   PRIMARY KEY (`idServicio`),
   INDEX `fk_servicio_tipohabitacion1_idx` (`tipohabitacion_idTipoHabitacion` ASC))
-ENGINE = MyISAM
+ENGINE = InnoDB
 DEFAULT CHARACTER SET = latin1;
 
 
@@ -433,7 +446,7 @@ CREATE TABLE IF NOT EXISTS `hotelSanCarlos`.`detalleasignacionservicio` (
   `servicio_idServicio` INT(11) NOT NULL,
   PRIMARY KEY (`idAsignacionHabitacion`),
   INDEX `fk_detalleasignacionservicio_servicio1_idx` (`servicio_idServicio` ASC))
-ENGINE = MyISAM
+ENGINE = InnoDB
 DEFAULT CHARACTER SET = latin1;
 
 
@@ -445,7 +458,7 @@ CREATE TABLE IF NOT EXISTS `hotelSanCarlos`.`mantenimiento` (
   `nombreMantenimiento` VARCHAR(45) NOT NULL,
   `descripcionMantenimiento` VARCHAR(150) NOT NULL,
   PRIMARY KEY (`idMantenimiento`))
-ENGINE = MyISAM
+ENGINE = InnoDB
 DEFAULT CHARACTER SET = latin1;
 
 
@@ -459,19 +472,7 @@ CREATE TABLE IF NOT EXISTS `hotelSanCarlos`.`detallemantenimientohabitacion` (
   INDEX `fk_detallemantenimientohabitacion_mantenimiento1_idx` (`mantenimiento_idMantenimiento` ASC),
   INDEX `fk_detallemantenimientohabitacion_habitacion1_idx` (`habitacion_idHabitacion` ASC),
   PRIMARY KEY (`mantenimiento_idMantenimiento`, `habitacion_idHabitacion`))
-ENGINE = MyISAM
-DEFAULT CHARACTER SET = latin1;
-
-
--- -----------------------------------------------------
--- Table `hotelSanCarlos`.`periodo`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `hotelSanCarlos`.`periodo` (
-  `idPeriodo` INT(11) NOT NULL AUTO_INCREMENT,
-  `fechaInicio` DATETIME NULL DEFAULT NULL,
-  `fechaFin` DATETIME NULL DEFAULT NULL,
-  PRIMARY KEY (`idPeriodo`))
-ENGINE = MyISAM
+ENGINE = InnoDB
 DEFAULT CHARACTER SET = latin1;
 
 
@@ -482,13 +483,14 @@ CREATE TABLE IF NOT EXISTS `hotelSanCarlos`.`nomina` (
   `idNomina` INT(11) NOT NULL AUTO_INCREMENT,
   `fechaEmision` DATETIME NOT NULL,
   `nombreEmpresa` VARCHAR(55) NOT NULL,
-  `periodo_idPeriodo` INT(11) NOT NULL,
   `totalDeducido` FLOAT NOT NULL,
   `totalPercibidoPagar` FLOAT NOT NULL,
   `estado` INT NOT NULL,
-  PRIMARY KEY (`idNomina`),
-  INDEX `fk_nomina_periodo1_idx` (`periodo_idPeriodo` ASC))
-ENGINE = MyISAM
+  `fechaInicio` DATE NULL,
+  `fechaFinal` DATE NULL,
+  `quinOrMens` INT NULL,
+  PRIMARY KEY (`idNomina`))
+ENGINE = InnoDB
 DEFAULT CHARACTER SET = latin1;
 
 
@@ -502,7 +504,7 @@ CREATE TABLE IF NOT EXISTS `hotelSanCarlos`.`percepcionDeduccion` (
   `descripcionPD` VARCHAR(128) NULL,
   `flagOperacion` INT NOT NULL,
   PRIMARY KEY (`id_PD`))
-ENGINE = MyISAM
+ENGINE = InnoDB
 DEFAULT CHARACTER SET = latin1;
 
 
@@ -518,7 +520,7 @@ CREATE TABLE IF NOT EXISTS `hotelSanCarlos`.`detallenomina` (
   INDEX `fk_detallenomina_contrato1_idx` (`contratoIdContrato` ASC),
   PRIMARY KEY (`nominIdNomina`, `contratoIdContrato`, `id_PD`),
   INDEX `fk_detallenomina_percepcion1_idx` (`id_PD` ASC))
-ENGINE = MyISAM
+ENGINE = InnoDB
 DEFAULT CHARACTER SET = latin1;
 
 
@@ -533,7 +535,7 @@ CREATE TABLE IF NOT EXISTS `hotelSanCarlos`.`partida` (
   `fecha` DATE NULL,
   `estado` VARCHAR(45) NOT NULL,
   PRIMARY KEY (`idPartida`))
-ENGINE = MyISAM
+ENGINE = InnoDB
 DEFAULT CHARACTER SET = latin1;
 
 
@@ -549,7 +551,7 @@ CREATE TABLE IF NOT EXISTS `hotelSanCarlos`.`detallepartida` (
   PRIMARY KEY (`numeroDetallePartida`, `partida_idPartida`),
   INDEX `fk_detallepartida_cuentacontabilidad1_idx` (`cuentacontabilidad_nomenclatura` ASC),
   INDEX `fk_detallepartida_partida1_idx` (`partida_idPartida` ASC))
-ENGINE = MyISAM
+ENGINE = InnoDB
 DEFAULT CHARACTER SET = latin1;
 
 
@@ -561,7 +563,7 @@ CREATE TABLE IF NOT EXISTS `hotelSanCarlos`.`mesa` (
   `noMesa` INT(11) NOT NULL,
   `capacidad` INT(11) NOT NULL,
   PRIMARY KEY (`idMesa`))
-ENGINE = MyISAM
+ENGINE = InnoDB
 DEFAULT CHARACTER SET = latin1;
 
 
@@ -576,7 +578,7 @@ CREATE TABLE IF NOT EXISTS `hotelSanCarlos`.`pedidoRestaurante` (
   PRIMARY KEY (`idPedidoRestaurante`, `mesa_idMesa`, `cliente_idCliente`),
   INDEX `fk_pedido_mesa1_idx` (`mesa_idMesa` ASC),
   INDEX `fk_pedido_cliente1_idx` (`cliente_idCliente` ASC))
-ENGINE = MyISAM
+ENGINE = InnoDB
 DEFAULT CHARACTER SET = latin1;
 
 
@@ -590,7 +592,7 @@ CREATE TABLE IF NOT EXISTS `hotelSanCarlos`.`detallepedidobebida` (
   INDEX `fk_detallepedidobebida_pedidoRestaurante1_idx` (`pedidoRestaurante_idPedido` ASC),
   PRIMARY KEY (`pedidoRestaurante_idPedido`, `productos_idProducto`),
   INDEX `fk_detallepedidobebida_productos1_idx` (`productos_idProducto` ASC))
-ENGINE = MyISAM
+ENGINE = InnoDB
 DEFAULT CHARACTER SET = latin1;
 
 
@@ -618,7 +620,7 @@ CREATE TABLE IF NOT EXISTS `hotelSanCarlos`.`platillo` (
   `receta_idReceta` INT NOT NULL,
   PRIMARY KEY (`idPlatillo`),
   INDEX `fk_platillo_receta1_idx` (`receta_idReceta` ASC))
-ENGINE = MyISAM
+ENGINE = InnoDB
 DEFAULT CHARACTER SET = latin1;
 
 
@@ -632,7 +634,7 @@ CREATE TABLE IF NOT EXISTS `hotelSanCarlos`.`detallepedidoplatillo` (
   INDEX `fk_detallepedidoplatillo_platillo1_idx` (`platillo_idPlatillo` ASC),
   INDEX `fk_detallepedidoplatillo_pedidoRestaurante1_idx` (`pedidoRestaurante_idPedido` ASC),
   PRIMARY KEY (`platillo_idPlatillo`, `pedidoRestaurante_idPedido`))
-ENGINE = MyISAM
+ENGINE = InnoDB
 DEFAULT CHARACTER SET = latin1;
 
 
@@ -641,14 +643,16 @@ DEFAULT CHARACTER SET = latin1;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `hotelSanCarlos`.`reservacion` (
   `idReservacion` INT(11) NOT NULL AUTO_INCREMENT,
-  `fechaInicioReservacion` DATE NOT NULL,
-  `fechaFinalReservacion` DATE NOT NULL,
-  `costoReservacion` FLOAT NOT NULL,
-  `estadoReserva` VARCHAR(45) NOT NULL,
+  `fechaEntrada` DATETIME NOT NULL,
+  `fechaFinal` DATETIME NOT NULL,
+  `estadoReserva` VARCHAR(50) NOT NULL,
+  `nombreCliente` VARCHAR(45) NOT NULL,
+  `apellidoCliente` VARCHAR(45) NULL,
   `cliente_idCliente` INT(11) NOT NULL,
-  PRIMARY KEY (`idReservacion`, `cliente_idCliente`),
+  `tipo` VARCHAR(45) NULL,
+  PRIMARY KEY (`idReservacion`),
   INDEX `fk_reservacion_cliente1_idx` (`cliente_idCliente` ASC))
-ENGINE = MyISAM
+ENGINE = InnoDB
 DEFAULT CHARACTER SET = latin1;
 
 
@@ -660,7 +664,7 @@ CREATE TABLE IF NOT EXISTS `hotelSanCarlos`.`detallereservacionservicio` (
   `reservacion_idReservacion` INT(11) NOT NULL,
   INDEX `fk_detallereservacionservicio_servicio1_idx` (`servicio_idServicio` ASC),
   INDEX `fk_detallereservacionservicio_reservacion1_idx` (`reservacion_idReservacion` ASC))
-ENGINE = MyISAM
+ENGINE = InnoDB
 DEFAULT CHARACTER SET = latin1;
 
 
@@ -675,7 +679,7 @@ CREATE TABLE IF NOT EXISTS `hotelSanCarlos`.`historialmoneda` (
   `moneda_idMoneda` INT(11) NOT NULL,
   PRIMARY KEY (`idHistorial`),
   INDEX `fk_historialmoneda_moneda1_idx` (`moneda_idMoneda` ASC))
-ENGINE = MyISAM
+ENGINE = InnoDB
 DEFAULT CHARACTER SET = latin1;
 
 
@@ -690,7 +694,7 @@ CREATE TABLE IF NOT EXISTS `hotelSanCarlos`.`horaextra` (
   `contrato_idContrato` INT(10) NOT NULL,
   PRIMARY KEY (`idHorasExtra`, `fechaHoras`),
   INDEX `fk_horaextra_contrato1_idx` (`contrato_idContrato` ASC))
-ENGINE = MyISAM
+ENGINE = InnoDB
 DEFAULT CHARACTER SET = latin1;
 
 
@@ -704,7 +708,7 @@ CREATE TABLE IF NOT EXISTS `hotelSanCarlos`.`proveedores` (
   `representante` VARCHAR(45) NULL,
   `nit_proveedor` VARCHAR(45) NULL,
   PRIMARY KEY (`idProveedores`))
-ENGINE = MyISAM
+ENGINE = InnoDB
 DEFAULT CHARACTER SET = latin1;
 
 
@@ -716,7 +720,7 @@ CREATE TABLE IF NOT EXISTS `hotelSanCarlos`.`registroigss` (
   `contrato_idContrato` INT(10) NOT NULL,
   PRIMARY KEY (`noCarnetIgss`),
   INDEX `fk_registroigss_contrato1_idx` (`contrato_idContrato` ASC))
-ENGINE = MyISAM
+ENGINE = InnoDB
 DEFAULT CHARACTER SET = latin1;
 
 
@@ -728,7 +732,7 @@ CREATE TABLE IF NOT EXISTS `hotelSanCarlos`.`registroirtra` (
   `contrato_idContrato` INT(10) NOT NULL,
   PRIMARY KEY (`carneIrtra`),
   INDEX `fk_registroirtra_contrato1_idx` (`contrato_idContrato` ASC))
-ENGINE = MyISAM
+ENGINE = InnoDB
 DEFAULT CHARACTER SET = latin1;
 
 
@@ -746,7 +750,7 @@ CREATE TABLE IF NOT EXISTS `hotelSanCarlos`.`suspension` (
   `contrato_idContrato` INT(10) NOT NULL,
   PRIMARY KEY (`idregistroSuspension`),
   INDEX `fk_suspension_contrato1_idx` (`contrato_idContrato` ASC))
-ENGINE = MyISAM
+ENGINE = InnoDB
 DEFAULT CHARACTER SET = latin1;
 
 
@@ -757,18 +761,7 @@ CREATE TABLE IF NOT EXISTS `hotelSanCarlos`.`tipopago` (
   `idTipoPago` INT(11) NOT NULL,
   `nombre` VARCHAR(25) NULL DEFAULT NULL,
   PRIMARY KEY (`idTipoPago`))
-ENGINE = MyISAM
-DEFAULT CHARACTER SET = latin1;
-
-
--- -----------------------------------------------------
--- Table `hotelSanCarlos`.`tipotransaccion`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `hotelSanCarlos`.`tipotransaccion` (
-  `idTipoTransaccion` INT(11) NOT NULL,
-  `nombre` VARCHAR(30) NULL DEFAULT NULL,
-  PRIMARY KEY (`idTipoTransaccion`))
-ENGINE = MyISAM
+ENGINE = InnoDB
 DEFAULT CHARACTER SET = latin1;
 
 
@@ -785,21 +778,35 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
+-- Table `hotelSanCarlos`.`Movimiento`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `hotelSanCarlos`.`Movimiento` (
+  `idMovimiento` INT NOT NULL,
+  `Movimiento` VARCHAR(45) NULL,
+  PRIMARY KEY (`idMovimiento`))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
 -- Table `hotelSanCarlos`.`transaccion`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `hotelSanCarlos`.`transaccion` (
   `noTransaccion` INT(11) NOT NULL,
   `valor` FLOAT NULL DEFAULT NULL,
-  `idCuenta` INT(11) NULL DEFAULT NULL,
+  `idCuentaA` INT(11) NULL DEFAULT NULL,
   `banco_idBanco` INT(11) NOT NULL,
   `cuentabanco_idBanco` INT(11) NOT NULL,
   `tipopago_idTipoPago` INT(11) NOT NULL,
   `Conciliacion_CorrConciliacion` INT NOT NULL,
+  `idCuebtaB` INT NULL,
+  `Movimiento_idMovimiento` INT NOT NULL,
+  `fecha` DATE NULL,
   PRIMARY KEY (`noTransaccion`),
   INDEX `fk_transaccion_banco1_idx` (`banco_idBanco` ASC),
   INDEX `fk_transaccion_tipopago1_idx` (`tipopago_idTipoPago` ASC),
-  INDEX `fk_transaccion_Conciliacion1_idx` (`Conciliacion_CorrConciliacion` ASC))
-ENGINE = MyISAM
+  INDEX `fk_transaccion_Conciliacion1_idx` (`Conciliacion_CorrConciliacion` ASC),
+  INDEX `fk_transaccion_Movimiento1_idx` (`Movimiento_idMovimiento` ASC))
+ENGINE = InnoDB
 DEFAULT CHARACTER SET = latin1;
 
 
@@ -817,7 +824,7 @@ CREATE TABLE IF NOT EXISTS `hotelSanCarlos`.`vacaciones` (
   `contrato_idContrato` INT(10) NOT NULL,
   PRIMARY KEY (`idVacaciones`),
   INDEX `fk_vacaciones_contrato1_idx` (`contrato_idContrato` ASC))
-ENGINE = MyISAM
+ENGINE = InnoDB
 DEFAULT CHARACTER SET = latin1;
 
 
@@ -841,17 +848,43 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
+-- Table `hotelSanCarlos`.`cotizacion`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `hotelSanCarlos`.`cotizacion` (
+  `idCotizacion` INT NOT NULL AUTO_INCREMENT,
+  `productos_idProducto` INT(11) NOT NULL,
+  `cantidad` INT NULL,
+  `fechaCotizacion` VARCHAR(45) NULL,
+  `total` INT NULL,
+  `cliente_idCliente` INT(11) NOT NULL,
+  PRIMARY KEY (`idCotizacion`),
+  INDEX `fk_cotizacion_productos1_idx` (`productos_idProducto` ASC),
+  INDEX `fk_cotizacion_cliente1_idx` (`cliente_idCliente` ASC),
+  CONSTRAINT `fk_cotizacion_productos1`
+    FOREIGN KEY (`productos_idProducto`)
+    REFERENCES `hotelSanCarlos`.`productos` (`idProducto`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_cotizacion_cliente1`
+    FOREIGN KEY (`cliente_idCliente`)
+    REFERENCES `hotelSanCarlos`.`cliente` (`idCliente`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
 -- Table `hotelSanCarlos`.`pedido`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `hotelSanCarlos`.`pedido` (
   `idPedido` INT NOT NULL AUTO_INCREMENT,
   `fecha` VARCHAR(45) NULL,
-  `productos_idProducto` INT(11) NOT NULL,
+  `cotizacion_idCotizacion` INT NOT NULL,
   PRIMARY KEY (`idPedido`),
-  INDEX `fk_pedido_productos1_idx` (`productos_idProducto` ASC),
-  CONSTRAINT `fk_pedido_productos1`
-    FOREIGN KEY (`productos_idProducto`)
-    REFERENCES `hotelSanCarlos`.`productos` (`idProducto`)
+  INDEX `fk_pedido_cotizacion1_idx` (`cotizacion_idCotizacion` ASC),
+  CONSTRAINT `fk_pedido_cotizacion1`
+    FOREIGN KEY (`cotizacion_idCotizacion`)
+    REFERENCES `hotelSanCarlos`.`cotizacion` (`idCotizacion`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
@@ -901,15 +934,40 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
+-- Table `hotelSanCarlos`.`folio`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `hotelSanCarlos`.`folio` (
+  `id_gasto` INT NOT NULL AUTO_INCREMENT,
+  `habitacion` INT NULL,
+  `tipoCliente` VARCHAR(45) NULL,
+  `nombre` VARCHAR(45) NULL,
+  `apellido` VARCHAR(45) NULL,
+  `fecha` DATETIME NULL,
+  `monto` INT NULL,
+  `descripcion` VARCHAR(45) NULL,
+  `reservacion_idReservacion` INT(11) NOT NULL,
+  PRIMARY KEY (`id_gasto`),
+  INDEX `fk_folio_reservacion1_idx` (`reservacion_idReservacion` ASC),
+  CONSTRAINT `fk_folio_reservacion1`
+    FOREIGN KEY (`reservacion_idReservacion`)
+    REFERENCES `hotelSanCarlos`.`reservacion` (`idReservacion`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
 -- Table `hotelSanCarlos`.`detallefactura`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `hotelSanCarlos`.`detallefactura` (
-  `cantidadFacturado` INT NOT NULL,
+  `cantidadFacturado` INT NULL,
   `precioFacturado` INT NULL,
   `factura_idFactura` INT NOT NULL,
-  `productos_idProducto` INT(11) NOT NULL,
+  `productos_idProducto` INT(11) NULL,
+  `folio_id_gasto` INT NULL,
   INDEX `fk_detallefactura_factura1_idx` (`factura_idFactura` ASC),
   INDEX `fk_detallefactura_productos1_idx` (`productos_idProducto` ASC),
+  INDEX `fk_detallefactura_folio1_idx` (`folio_id_gasto` ASC),
   CONSTRAINT `fk_detallefactura_factura1`
     FOREIGN KEY (`factura_idFactura`)
     REFERENCES `hotelSanCarlos`.`factura` (`idFactura`)
@@ -918,6 +976,11 @@ CREATE TABLE IF NOT EXISTS `hotelSanCarlos`.`detallefactura` (
   CONSTRAINT `fk_detallefactura_productos1`
     FOREIGN KEY (`productos_idProducto`)
     REFERENCES `hotelSanCarlos`.`productos` (`idProducto`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_detallefactura_folio1`
+    FOREIGN KEY (`folio_id_gasto`)
+    REFERENCES `hotelSanCarlos`.`folio` (`id_gasto`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
@@ -983,32 +1046,6 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `hotelSanCarlos`.`cotizacion`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `hotelSanCarlos`.`cotizacion` (
-  `idCotizacion` INT NOT NULL AUTO_INCREMENT,
-  `productos_idProducto` INT(11) NOT NULL,
-  `cantidad` INT NULL,
-  `fechaCotizacion` VARCHAR(45) NULL,
-  `total` INT NULL,
-  `empleado_idEmpleado` INT(11) NOT NULL,
-  PRIMARY KEY (`idCotizacion`),
-  INDEX `fk_cotizacion_productos1_idx` (`productos_idProducto` ASC),
-  INDEX `fk_cotizacion_empleado1_idx` (`empleado_idEmpleado` ASC),
-  CONSTRAINT `fk_cotizacion_productos1`
-    FOREIGN KEY (`productos_idProducto`)
-    REFERENCES `hotelSanCarlos`.`productos` (`idProducto`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `fk_cotizacion_empleado1`
-    FOREIGN KEY (`empleado_idEmpleado`)
-    REFERENCES `hotelSanCarlos`.`empleado` (`idEmpleado`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
-
-
--- -----------------------------------------------------
 -- Table `hotelSanCarlos`.`cierreNomina`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `hotelSanCarlos`.`cierreNomina` (
@@ -1035,14 +1072,7 @@ CREATE TABLE IF NOT EXISTS `hotelSanCarlos`.`Transacciones` (
   `descripcion` VARCHAR(45) NULL,
   `cod_cuenta` INT NULL,
   `accion` VARCHAR(45) NULL,
-  `cuentacontabilidad_nomenclatura` INT(11) NOT NULL,
-  PRIMARY KEY (`cod_transacciones`),
-  INDEX `fk_Transacciones_cuentacontabilidad1_idx` (`cuentacontabilidad_nomenclatura` ASC),
-  CONSTRAINT `fk_Transacciones_cuentacontabilidad1`
-    FOREIGN KEY (`cuentacontabilidad_nomenclatura`)
-    REFERENCES `hotelSanCarlos`.`cuentacontabilidad` (`nomenclatura`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+  PRIMARY KEY (`cod_transacciones`))
 ENGINE = InnoDB;
 
 
@@ -1051,14 +1081,15 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `hotelSanCarlos`.`Movimientos_cliente` (
   `Id_mov_cliente` INT NOT NULL AUTO_INCREMENT,
-  `cod_transaccion` INT NOT NULL,
-  `id_cliente` INT NOT NULL,
+  `cod_transaccion` INT NULL,
+  `id_cliente` INT NULL,
   `total_cobro` FLOAT NULL,
   `saldo` FLOAT NULL,
   `fecha` DATE NULL,
   `Transacciones_cod_transacciones` INT NOT NULL,
   `cliente_idCliente` INT(11) NOT NULL,
   `fechaVencimiento` DATE NULL,
+  `actual` INT NULL,
   PRIMARY KEY (`Id_mov_cliente`),
   INDEX `fk_Movimientos_cliente_Transacciones1_idx` (`Transacciones_cod_transacciones` ASC),
   INDEX `fk_Movimientos_cliente_cliente1_idx` (`cliente_idCliente` ASC),
@@ -1098,6 +1129,8 @@ CREATE TABLE IF NOT EXISTS `hotelSanCarlos`.`Movimientos_proveedor` (
   `fecha` DATE NULL,
   `Transacciones_cod_transacciones` INT NOT NULL,
   `proveedores_idProveedores` INT(11) NOT NULL,
+  `saldo_actual` DOUBLE NULL,
+  `fechaVencimiento` DATE NULL,
   PRIMARY KEY (`Id_mov_proveedor`),
   INDEX `fk_Movimientos_proveedor_Transacciones1_idx` (`Transacciones_cod_transacciones` ASC),
   INDEX `fk_Movimientos_proveedor_proveedores1_idx` (`proveedores_idProveedores` ASC),
@@ -1118,39 +1151,16 @@ ENGINE = InnoDB;
 -- Table `hotelSanCarlos`.`historial`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `hotelSanCarlos`.`historial` (
-  `idHistorial` INT NOT NULL,
+  `idHistorial` INT NOT NULL AUTO_INCREMENT,
   `fecha` DATE NULL,
   `valor` DOUBLE NULL,
+  `fechaCierre` DATE NULL,
   `cuentacontabilidad_nomenclatura` INT(11) NOT NULL,
   PRIMARY KEY (`idHistorial`),
   INDEX `fk_historial_cuentacontabilidad1_idx` (`cuentacontabilidad_nomenclatura` ASC),
   CONSTRAINT `fk_historial_cuentacontabilidad1`
     FOREIGN KEY (`cuentacontabilidad_nomenclatura`)
     REFERENCES `hotelSanCarlos`.`cuentacontabilidad` (`nomenclatura`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
-
-
--- -----------------------------------------------------
--- Table `hotelSanCarlos`.`detalletransaccion`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `hotelSanCarlos`.`detalletransaccion` (
-  `CorrDetTransaccion` INT NOT NULL,
-  `TipoOperacion` TINYINT NULL,
-  `transaccion_noTransaccion` INT(11) NOT NULL,
-  `tipotransaccion_idTipoTransaccion` INT(11) NOT NULL,
-  PRIMARY KEY (`CorrDetTransaccion`),
-  INDEX `fk_detalletransaccion_transaccion1_idx` (`transaccion_noTransaccion` ASC),
-  INDEX `fk_detalletransaccion_tipotransaccion1_idx` (`tipotransaccion_idTipoTransaccion` ASC),
-  CONSTRAINT `fk_detalletransaccion_transaccion1`
-    FOREIGN KEY (`transaccion_noTransaccion`)
-    REFERENCES `hotelSanCarlos`.`transaccion` (`noTransaccion`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `fk_detalletransaccion_tipotransaccion1`
-    FOREIGN KEY (`tipotransaccion_idTipoTransaccion`)
-    REFERENCES `hotelSanCarlos`.`tipotransaccion` (`idTipoTransaccion`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
@@ -1217,9 +1227,11 @@ CREATE TABLE IF NOT EXISTS `hotelSanCarlos`.`detalleRecetaIngrediente` (
   `receta_idReceta` INT NOT NULL,
   `pesoOcantidad` VARCHAR(45) NOT NULL,
   `productos_idProducto` INT(11) NOT NULL,
+  `tipoMedida_idTipoMedida` INT NOT NULL,
   INDEX `fk_detalleRecetaIngrediente_receta1_idx` (`receta_idReceta` ASC),
   PRIMARY KEY (`receta_idReceta`, `productos_idProducto`),
   INDEX `fk_detalleRecetaIngrediente_productos1_idx` (`productos_idProducto` ASC),
+  INDEX `fk_detalleRecetaIngrediente_tipoMedida1_idx` (`tipoMedida_idTipoMedida` ASC),
   CONSTRAINT `fk_detalleRecetaIngrediente_receta1`
     FOREIGN KEY (`receta_idReceta`)
     REFERENCES `hotelSanCarlos`.`receta` (`idReceta`)
@@ -1228,6 +1240,11 @@ CREATE TABLE IF NOT EXISTS `hotelSanCarlos`.`detalleRecetaIngrediente` (
   CONSTRAINT `fk_detalleRecetaIngrediente_productos1`
     FOREIGN KEY (`productos_idProducto`)
     REFERENCES `hotelSanCarlos`.`productos` (`idProducto`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_detalleRecetaIngrediente_tipoMedida1`
+    FOREIGN KEY (`tipoMedida_idTipoMedida`)
+    REFERENCES `hotelSanCarlos`.`tipoMedida` (`idTipoMedida`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
@@ -1311,30 +1328,6 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `hotelSanCarlos`.`comisiones`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `hotelSanCarlos`.`comisiones` (
-  `idComision` INT NOT NULL AUTO_INCREMENT,
-  `porcentaje` FLOAT NULL,
-  `inventario_codigoInventario` INT(11) NOT NULL,
-  `empleado_idEmpleado` INT(11) NOT NULL,
-  PRIMARY KEY (`idComision`),
-  INDEX `fk_comisiones_inventario1_idx` (`inventario_codigoInventario` ASC),
-  INDEX `fk_comisiones_empleado1_idx` (`empleado_idEmpleado` ASC),
-  CONSTRAINT `fk_comisiones_inventario1`
-    FOREIGN KEY (`inventario_codigoInventario`)
-    REFERENCES `hotelSanCarlos`.`inventario` (`codigoInventario`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `fk_comisiones_empleado1`
-    FOREIGN KEY (`empleado_idEmpleado`)
-    REFERENCES `hotelSanCarlos`.`empleado` (`idEmpleado`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
-
-
--- -----------------------------------------------------
 -- Table `hotelSanCarlos`.`transaccionesInventario`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `hotelSanCarlos`.`transaccionesInventario` (
@@ -1378,15 +1371,10 @@ CREATE TABLE IF NOT EXISTS `hotelSanCarlos`.`movimientoInventario` (
   `bodega_idBodegaOrigen` INT(11) NOT NULL,
   `bodega_idBodegaDestino` INT(11) NOT NULL,
   PRIMARY KEY (`codigoMovimientoInventario`),
-  INDEX `fk_movimientoInventario_transaccionesInventario1_idx` (`transaccionesInventario_idTransaccionesInventario` ASC),
   INDEX `fk_movimientoInventario_TipoMovimientoIventario1_idx` (`TipoMovimientoIventario_idTipoMovimientoIventario` ASC),
   INDEX `fk_movimientoInventario_bodega1_idx` (`bodega_idBodegaOrigen` ASC),
   INDEX `fk_movimientoInventario_bodega2_idx` (`bodega_idBodegaDestino` ASC),
-  CONSTRAINT `fk_movimientoInventario_transaccionesInventario1`
-    FOREIGN KEY (`transaccionesInventario_idTransaccionesInventario`)
-    REFERENCES `hotelSanCarlos`.`transaccionesInventario` (`idTransaccionesInventario`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
+  INDEX `fk_movimientoInventario_transaccionesInventario1_idx` (`transaccionesInventario_idTransaccionesInventario` ASC),
   CONSTRAINT `fk_movimientoInventario_TipoMovimientoIventario1`
     FOREIGN KEY (`TipoMovimientoIventario_idTipoMovimientoIventario`)
     REFERENCES `hotelSanCarlos`.`TipoMovimientoIventario` (`idTipoMovimientoIventario`)
@@ -1400,6 +1388,11 @@ CREATE TABLE IF NOT EXISTS `hotelSanCarlos`.`movimientoInventario` (
   CONSTRAINT `fk_movimientoInventario_bodega2`
     FOREIGN KEY (`bodega_idBodegaDestino`)
     REFERENCES `hotelSanCarlos`.`bodega` (`idBodega`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_movimientoInventario_transaccionesInventario1`
+    FOREIGN KEY (`transaccionesInventario_idTransaccionesInventario`)
+    REFERENCES `hotelSanCarlos`.`transaccionesInventario` (`idTransaccionesInventario`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
@@ -1668,12 +1661,277 @@ CREATE TABLE IF NOT EXISTS `hotelSanCarlos`.`DetalleMovimiento` (
 ENGINE = InnoDB;
 
 
-SET SQL_MODE=@OLD_SQL_MODE;
-SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
-SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
+-- -----------------------------------------------------
+-- Table `hotelSanCarlos`.`Poliza Banco`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `hotelSanCarlos`.`Poliza Banco` (
+  `idPolizaBanco` INT NOT NULL AUTO_INCREMENT,
+  `banco_idBanco` INT(11) NOT NULL,
+  `cuentabanco_noCuenta` VARCHAR(15) NOT NULL,
+  `transaccion_noTransaccion` INT(11) NOT NULL,
+  `descripcion` VARCHAR(45) NULL,
+  PRIMARY KEY (`idPolizaBanco`),
+  INDEX `fk_Poliza Banco_banco1_idx` (`banco_idBanco` ASC),
+  INDEX `fk_Poliza Banco_cuentabanco1_idx` (`cuentabanco_noCuenta` ASC),
+  INDEX `fk_Poliza Banco_transaccion1_idx` (`transaccion_noTransaccion` ASC),
+  CONSTRAINT `fk_Poliza Banco_banco1`
+    FOREIGN KEY (`banco_idBanco`)
+    REFERENCES `hotelSanCarlos`.`banco` (`idBanco`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_Poliza Banco_cuentabanco1`
+    FOREIGN KEY (`cuentabanco_noCuenta`)
+    REFERENCES `hotelSanCarlos`.`cuentabanco` (`noCuenta`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_Poliza Banco_transaccion1`
+    FOREIGN KEY (`transaccion_noTransaccion`)
+    REFERENCES `hotelSanCarlos`.`transaccion` (`noTransaccion`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
 
-describe cliente;
-insert into cliente values(100,3183280,"Jackeline Andrea","Lopez Alvarado","Guatemala","Guatemala","Guatemala",22331145,"alguien@gmail.com",13,600);
+
+-- -----------------------------------------------------
+-- Table `hotelSanCarlos`.`Cheque`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `hotelSanCarlos`.`Cheque` (
+  `NoCheque` INT NOT NULL,
+  `NoFolio` INT NOT NULL,
+  `Lugar` VARCHAR(45) NULL,
+  `Fecha` DATE NULL,
+  `total` DOUBLE NULL,
+  `empleado_idEmpleado` INT(11) NOT NULL,
+  PRIMARY KEY (`NoCheque`, `NoFolio`),
+  INDEX `fk_Cheque_empleado1_idx` (`empleado_idEmpleado` ASC),
+  CONSTRAINT `fk_Cheque_empleado1`
+    FOREIGN KEY (`empleado_idEmpleado`)
+    REFERENCES `hotelSanCarlos`.`empleado` (`idEmpleado`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `hotelSanCarlos`.`Pago Registro`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `hotelSanCarlos`.`Pago Registro` (
+  `idPago Registro` INT NOT NULL,
+  `fechaEmision` DATE NULL,
+  `Cheque_NoCheque` INT NOT NULL,
+  `Cheque_NoFolio` INT NOT NULL,
+  `empleado_idEmpleado` INT(11) NOT NULL,
+  PRIMARY KEY (`idPago Registro`),
+  INDEX `fk_Pago Registro_Cheque1_idx` (`Cheque_NoCheque` ASC, `Cheque_NoFolio` ASC),
+  INDEX `fk_Pago Registro_empleado1_idx` (`empleado_idEmpleado` ASC),
+  CONSTRAINT `fk_Pago Registro_Cheque1`
+    FOREIGN KEY (`Cheque_NoCheque` , `Cheque_NoFolio`)
+    REFERENCES `hotelSanCarlos`.`Cheque` (`NoCheque` , `NoFolio`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_Pago Registro_empleado1`
+    FOREIGN KEY (`empleado_idEmpleado`)
+    REFERENCES `hotelSanCarlos`.`empleado` (`idEmpleado`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `hotelSanCarlos`.`transaccionNomina`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `hotelSanCarlos`.`transaccionNomina` (
+  `idTransaccionNomina` INT NOT NULL AUTO_INCREMENT,
+  `nombre` VARCHAR(45) NULL,
+  `efecto` VARCHAR(45) NULL,
+  `status` VARCHAR(45) NULL,
+  `fecha` DATE NULL,
+  `cuentacontabilidad_nomenclatura` INT(11) NOT NULL,
+  PRIMARY KEY (`idTransaccionNomina`),
+  INDEX `fk_transaccionNomina_cuentacontabilidad1_idx` (`cuentacontabilidad_nomenclatura` ASC),
+  CONSTRAINT `fk_transaccionNomina_cuentacontabilidad1`
+    FOREIGN KEY (`cuentacontabilidad_nomenclatura`)
+    REFERENCES `hotelSanCarlos`.`cuentacontabilidad` (`nomenclatura`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `hotelSanCarlos`.`table1`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `hotelSanCarlos`.`table1` (
+  `idReporteg` INT NOT NULL AUTO_INCREMENT,
+  `nombreReporteg` VARCHAR(60) NULL,
+  `pathr` VARCHAR(60) NULL,
+  `reporte_app_ip` INT NOT NULL,
+  PRIMARY KEY (`idReporteg`),
+  INDEX `fk_table1_aplicacion1_idx` (`reporte_app_ip` ASC),
+  CONSTRAINT `fk_table1_aplicacion1`
+    FOREIGN KEY (`reporte_app_ip`)
+    REFERENCES `hotelSanCarlos`.`aplicacion` (`idAplicacion`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `hotelSanCarlos`.`transaccionesProveedores`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `hotelSanCarlos`.`transaccionesProveedores` (
+  `cosTransaccion` INT NOT NULL AUTO_INCREMENT,
+  `accion` VARCHAR(45) NULL,
+  `descripcion` VARCHAR(45) NULL,
+  `cuentacontabilidad_nomenclatura` INT(11) NOT NULL,
+  PRIMARY KEY (`cosTransaccion`),
+  INDEX `fk_transaccionesProveedores_cuentacontabilidad1_idx` (`cuentacontabilidad_nomenclatura` ASC),
+  CONSTRAINT `fk_transaccionesProveedores_cuentacontabilidad1`
+    FOREIGN KEY (`cuentacontabilidad_nomenclatura`)
+    REFERENCES `hotelSanCarlos`.`cuentacontabilidad` (`nomenclatura`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `hotelSanCarlos`.`descripcionMantenimiento`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `hotelSanCarlos`.`descripcionMantenimiento` (
+  `idDescripcion` INT NOT NULL AUTO_INCREMENT,
+  `mantenimiento` VARCHAR(45) NULL,
+  PRIMARY KEY (`idDescripcion`))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `hotelSanCarlos`.`reporteHoteleria`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `hotelSanCarlos`.`reporteHoteleria` (
+  `idReporteHoteleria` INT NOT NULL AUTO_INCREMENT,
+  `descripcionMantenimiento_idDescripcion` INT NOT NULL,
+  `empleado_idEmpleado` INT(11) NOT NULL,
+  `descripcion` VARCHAR(45) NULL,
+  PRIMARY KEY (`idReporteHoteleria`),
+  INDEX `fk_reporteHoteleria_descripcionMantenimiento1_idx` (`descripcionMantenimiento_idDescripcion` ASC),
+  INDEX `fk_reporteHoteleria_empleado1_idx` (`empleado_idEmpleado` ASC),
+  CONSTRAINT `fk_reporteHoteleria_descripcionMantenimiento1`
+    FOREIGN KEY (`descripcionMantenimiento_idDescripcion`)
+    REFERENCES `hotelSanCarlos`.`descripcionMantenimiento` (`idDescripcion`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_reporteHoteleria_empleado1`
+    FOREIGN KEY (`empleado_idEmpleado`)
+    REFERENCES `hotelSanCarlos`.`empleado` (`idEmpleado`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `hotelSanCarlos`.`comisiones`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `hotelSanCarlos`.`comisiones` (
+  `idComision` INT NOT NULL AUTO_INCREMENT,
+  `vendedor_idVendedor` INT NOT NULL,
+  `fechaInicial` DATE NULL,
+  `fechaFinal` DATE NULL,
+  `total` FLOAT NULL,
+  PRIMARY KEY (`idComision`),
+  INDEX `fk_comisiones_vendedor1_idx` (`vendedor_idVendedor` ASC),
+  CONSTRAINT `fk_comisiones_vendedor1`
+    FOREIGN KEY (`vendedor_idVendedor`)
+    REFERENCES `hotelSanCarlos`.`vendedor` (`idVendedor`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `hotelSanCarlos`.`checkin`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `hotelSanCarlos`.`checkin` (
+  `idcheckin` INT NOT NULL AUTO_INCREMENT,
+  `fechaEntrada` DATETIME NULL,
+  `fechaSalida` DATETIME NULL,
+  `reservacion_idReservacion` INT(11) NOT NULL,
+  `cliente_idCliente` INT(11) NOT NULL,
+  PRIMARY KEY (`idcheckin`),
+  INDEX `fk_checkin_reservacion1_idx` (`reservacion_idReservacion` ASC),
+  INDEX `fk_checkin_cliente1_idx` (`cliente_idCliente` ASC),
+  CONSTRAINT `fk_checkin_reservacion1`
+    FOREIGN KEY (`reservacion_idReservacion`)
+    REFERENCES `hotelSanCarlos`.`reservacion` (`idReservacion`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_checkin_cliente1`
+    FOREIGN KEY (`cliente_idCliente`)
+    REFERENCES `hotelSanCarlos`.`cliente` (`idCliente`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `hotelSanCarlos`.`detalleHabitacionCheckin`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `hotelSanCarlos`.`detalleHabitacionCheckin` (
+  `habitacion_idHabitacion` INT(11) NOT NULL,
+  `checkin_idcheckin` INT NOT NULL,
+  INDEX `fk_detalleHabitacionCheckin_habitacion1_idx` (`habitacion_idHabitacion` ASC),
+  INDEX `fk_detalleHabitacionCheckin_checkin1_idx` (`checkin_idcheckin` ASC),
+  CONSTRAINT `fk_detalleHabitacionCheckin_habitacion1`
+    FOREIGN KEY (`habitacion_idHabitacion`)
+    REFERENCES `hotelSanCarlos`.`habitacion` (`idHabitacion`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_detalleHabitacionCheckin_checkin1`
+    FOREIGN KEY (`checkin_idcheckin`)
+    REFERENCES `hotelSanCarlos`.`checkin` (`idcheckin`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `hotelSanCarlos`.`detalleTipoHuespedCheckin`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `hotelSanCarlos`.`detalleTipoHuespedCheckin` (
+  `checkin_idcheckin` INT NOT NULL,
+  `tipoHuesped_idTipoHuesped` INT NOT NULL,
+  INDEX `fk_detalleTipoHuespedCheckin_checkin1_idx` (`checkin_idcheckin` ASC),
+  INDEX `fk_detalleTipoHuespedCheckin_tipoHuesped1_idx` (`tipoHuesped_idTipoHuesped` ASC),
+  CONSTRAINT `fk_detalleTipoHuespedCheckin_checkin1`
+    FOREIGN KEY (`checkin_idcheckin`)
+    REFERENCES `hotelSanCarlos`.`checkin` (`idcheckin`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_detalleTipoHuespedCheckin_tipoHuesped1`
+    FOREIGN KEY (`tipoHuesped_idTipoHuesped`)
+    REFERENCES `hotelSanCarlos`.`tipoHuesped` (`idTipoHuesped`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+
+create view reporte_trans as select * from transacciones;
+
+
+create view reporte_movs as select * from movimientos_cliente;
+
+##create view vista_transacciones as select t.cod_transacciones as CODIGO, t.descripcion AS DESCRIPCION, t.cuentacontabilidad_nomenclatura AS CUENTA
+##from transacciones t inner join  cuentacontabilidad c on t.cuentacontabilidad_nomenclatura=c.nomenclatura;
+
+
+create view vista_transacciones as select t.cod_transacciones as CODIGO, t.descripcion AS DESCRIPCION, t.cod_cuenta AS CUENTA
+from transacciones t inner join  cuentacontabilidad c on t.cod_cuenta=c.nomenclatura;
+
+create view vista_movimientos as select m.Id_mov_cliente AS CODIGO,c.nombreCliente AS NOMBRE, c.apellidoCliente AS APELLIDO, t.descripcion AS DESCRIPCION, 
+m.total_cobro AS ULTIMO_PAGO,m.saldo AS SALDO_PENDIENTE, m.fecha AS FECHA_DE_PAGO_REALIZADO, m.fechaVencimiento AS FECHA_DE_VENCIMIENTO, m.actual AS ACTUAL
+from cliente c join movimientos_cliente m on c.idCliente = m.cliente_idCliente join transacciones t on m.Transacciones_cod_transacciones = t.cod_transacciones 
+order by c.nombreCliente asc, m.Id_mov_cliente desc;
+
+
 insert into cliente(nitCliente,nombreCliente,apellidoCliente,direccionCliente,ciudadCliente,paisCliente,telefonoCliente,correoCliente,porcentajeCompra_idPorcentaje,vendedor_idVendedor) values(3183280,"Jackeline Andrea","Lopez Alvarado","Guatemala","Guatemala","Guatemala",22331145,"alguien@gmail.com",13,600);
 insert into cliente(nitCliente,nombreCliente,apellidoCliente,direccionCliente,ciudadCliente,paisCliente,telefonoCliente,correoCliente,porcentajeCompra_idPorcentaje,vendedor_idVendedor) values(1231404,"Karina","Aguilar","Guatemala","Guatemala","Guatemala",22331145,"alguien@gmail.com",13,600);
 insert into cliente(nitCliente,nombreCliente,apellidoCliente,direccionCliente,ciudadCliente,paisCliente,telefonoCliente,correoCliente,porcentajeCompra_idPorcentaje,vendedor_idVendedor) values(7841520,"Andrea","Romero","Guatemala","Guatemala","Guatemala",22331145,"alguien@gmail.com",13,600);
@@ -1684,7 +1942,6 @@ insert into cliente(nitCliente,nombreCliente,apellidoCliente,direccionCliente,ci
 insert into cliente(nitCliente,nombreCliente,apellidoCliente,direccionCliente,ciudadCliente,paisCliente,telefonoCliente,correoCliente,porcentajeCompra_idPorcentaje,vendedor_idVendedor) values(3546214,"Eva Maria","Cante","Guatemala","Guatemala","Guatemala",22331145,"alguien@gmail.com",13,600);
 insert into cliente(nitCliente,nombreCliente,apellidoCliente,direccionCliente,ciudadCliente,paisCliente,telefonoCliente,correoCliente,porcentajeCompra_idPorcentaje,vendedor_idVendedor) values(6982010,"Katherine","Rios","Guatemala","Guatemala","Guatemala",22331145,"alguien@gmail.com",13,600);
 
-describe cuentacontabilidad;
 insert into cuentacontabilidad values(87654321,"nomenclatura_nombre","Saldo",5,3500,300,250,3550,600,400,700,"naturaleza","tipo");
 insert into cuentacontabilidad values(12354050,"nomenclatura_nombre","Saldo",5,3500,300,250,3550,600,400,700,"naturaleza","tipo");
 insert into cuentacontabilidad values(85410210,"nomenclatura_nombre","Saldo",5,3500,300,250,3550,600,400,700,"naturaleza","tipo");
@@ -1695,123 +1952,12 @@ insert into cuentacontabilidad values(15426634,"nomenclatura_nombre","Saldo",5,3
 insert into cuentacontabilidad values(94101202,"nomenclatura_nombre","Saldo",5,3500,300,250,3550,600,400,700,"naturaleza","tipo");
 insert into cuentacontabilidad values(61014004,"nomenclatura_nombre","Saldo",5,3500,300,250,3550,600,400,700,"naturaleza","tipo");
 
-describe transacciones;
-insert into transacciones(cod_transacciones,descripcion,accion,cuentacontabilidad_nomenclatura) values(103,"nota de debito","+",87654321);
-insert into transacciones(descripcion,accion,cuentacontabilidad_nomenclatura) values("nota de debito","+",87654321);
-select * from transacciones;
+
+insert into transacciones(cod_transacciones,descripcion,accion,cod_cuenta) values(103,"nota de debito","+",87654321);
+insert into transacciones(descripcion,accion,cod_cuenta) values("nota de debito","+",87654321);
 
 describe movimientos_cliente;
-insert into movimientos_cliente(Id_mov_cliente,Transacciones_cod_transacciones,cliente_idCliente,total_cobro,saldo,fecha,fechaVencimiento,actual) values(200,101,100,600,2000,"2017-10-16","2017-12-12",1);
-insert into movimientos_cliente(Transacciones_cod_transacciones,cliente_idCliente,total_cobro,saldo,fecha,fechaVencimiento,actual) values(101,100,600,2000,"2017-10-16","2017-12-12",1);
-select * from movimientos_cliente;
 
-drop view vista_transacciones;
-create view vista_transacciones as select t.cod_transacciones as CODIGO, t.descripcion AS DESCRIPCION, t.cuentacontabilidad_nomenclatura AS CUENTA
-from transacciones t inner join  cuentacontabilidad c on t.cuentacontabilidad_nomenclatura=c.nomenclatura;
-select * from vista_transacciones;
-
-
-drop view vista_movimientos;
-create view vista_movimientos as select m.Id_mov_cliente AS CODIGO,c.nombreCliente AS NOMBRE, c.apellidoCliente AS APELLIDO, t.descripcion AS DESCRIPCION, 
-m.total_cobro AS ULTIMO_PAGO,m.saldo AS SALDO_PENDIENTE, m.fecha AS FECHA_DE_PAGO_REALIZADO, m.fechaVencimiento AS FECHA_DE_VENCIMIENTO, m.actual AS ACTUAL
-from cliente c join movimientos_cliente m on c.idCliente = m.cliente_idCliente join transacciones t on m.Transacciones_cod_transacciones = t.cod_transacciones 
-order by c.nombreCliente asc, m.Id_mov_cliente desc;
-select * from vista_movimientos;
-
-
-select m.total_cobro,m.saldo,m.fecha,m.Transacciones_cod_transacciones,m.cliente_idCliente,m.fechaVencimiento,m.actual from movimientos_cliente m where Id_mov_cliente = 203;
-               
-select m.total_cobro,m.saldo,m.fecha,m.Transacciones_cod_transacciones,m.cliente_idCliente,m.fechaVencimiento from movimientos_cliente m
-where Id_mov_cliente=202;
-
-select fecha from movimientos_cliente;
-select accion from transacciones where cod_transacciones=103;
-
-select saldo from movimientos_cliente where cliente_idCliente=100 and actual=1;
-
-
-select * from movimientos_cliente;
-
-
-#esteee
-select sum(saldo) as TOTAL_DEUDA from movimientos_cliente where cliente_idCliente=100 and actual=1;
-#es lo mismo que estee
-select Id_mov_cliente from movimientos_cliente where total_cobro=600 and saldo=2000;
-
-select * from cliente;
-
-select c.idCliente, c.nombreCliente from cliente c where c.nombreCliente like "Xiomara";
-
-select c.idCliente from cliente c where c.nombreCliente like "Xiomara";
-
-select c.idCliente from cliente c where c.apellidoCliente like "Katherine";
-
-select saldo from movimientos_cliente where cliente_idCliente=110;
-
-select * from cuentacontabilidad;
-
-select * from transacciones;
-
-SELECT nomenclatura + ' ' + nombre as NOM_COMPLETO, nombre from cuentacontabilidad;
-
-SELECT  CONCAT(nomenclatura,', ', nombre) AS DatosCombinados FROM cuentacontabilidad;
-
-SELECT CONCAT(cod_transacciones,', ', descripcion) AS DatosCombinados1 FROM transacciones;
-
-SELECT CONCAT(idCliente,', ', nombreCliente,' ', apellidoCliente) AS DatosCombinados2 FROM cliente;
-
-
-create view reporte_movs as select * from movimientos_cliente;
-
-select * from reporte_movs;
-
-
-select * from cliente;
-
-SELECT nombreCliente FROM cliente where idCliente = 102;
-
-
-
-drop view vista_cliente;
-
-create view vista_cliente as select c.nombreCliente, c.apellidoCliente from cliente c join movimientos_cliente m 
-on c.idCliente = m.cliente_idCliente and m.Id_mov_cliente=221;
-
-select * from vista_cliente;
-
-select c.nombreCliente from cliente c join movimientos_cliente m 
-on c.idCliente = m.cliente_idCliente and m.Id_mov_cliente=221;
-
-select idCliente,nombreCliente, apellidoCliente from cliente where idCliente= 102;
-
-truncate movimientos_cliente;
-
-###################################################333
-create view reporte_trans as select * from transacciones;
-
-select * from reporte_trans;
-
-select cod_transacciones,descripcion,accion,cuentacontabilidad_nomenclatura from transacciones;
-
-create view reporte_movs as select * from movimientos_cliente;
-
-select * from reporte_movs;
-
-
-create view vista_transacciones as select t.cod_transacciones as CODIGO, t.descripcion AS DESCRIPCION, t.cuentacontabilidad_nomenclatura AS CUENTA
-from transacciones t inner join  cuentacontabilidad c on t.cuentacontabilidad_nomenclatura=c.nomenclatura;
-
-
-select * from vista_transacciones;
-
-
-create view vista_movimientos as select m.Id_mov_cliente AS CODIGO,c.nombreCliente AS NOMBRE, c.apellidoCliente AS APELLIDO, t.descripcion AS DESCRIPCION, 
-m.total_cobro AS ULTIMO_PAGO,m.saldo AS SALDO_PENDIENTE, m.fecha AS FECHA_DE_PAGO_REALIZADO, m.fechaVencimiento AS FECHA_DE_VENCIMIENTO, m.actual AS ACTUAL
-from cliente c join movimientos_cliente m on c.idCliente = m.cliente_idCliente join transacciones t on m.Transacciones_cod_transacciones = t.cod_transacciones 
-order by c.nombreCliente asc, m.Id_mov_cliente desc;
-
-
-select * from vista_movimientos;
-
+insert into movimientos_cliente(Id_mov_cliente,Transacciones_cod_transacciones,cliente_idCliente,total_cobro,saldo,fecha,fechaVencimiento,actual) values(200,103,1,600,2000,"2017-10-16","2017-12-12",1);
 
 
